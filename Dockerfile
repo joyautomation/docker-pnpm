@@ -15,15 +15,8 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Set up bash customization
-RUN echo 'force_color_prompt=yes' >> /root/.bashrc && \
-    echo 'parse_git_branch() {' >> /root/.bashrc && \
-    echo '    git branch 2> /dev/null | sed -e "/^[^*]/d" -e "s/* \(.*\)/(\1)/"' >> /root/.bashrc && \
-    echo '}' >> /root/.bashrc && \
-    echo 'if [ "$color_prompt" = yes ]; then' >> /root/.bashrc && \
-    echo '    PS1="\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[33m\]\$(parse_git_branch)\[\033[00m\]\$ "' >> /root/.bashrc && \
-    echo 'else' >> /root/.bashrc && \
-    echo '    PS1="\u@\h:\w\$(parse_git_branch)\$ "' >> /root/.bashrc && \
-    echo 'fi' >> /root/.bashrc
+COPY .bashrc /tmp/.bashrc
+RUN cat /tmp/.bashrc >> /root/.bashrc && rm /tmp/.bashrc
 
 RUN npm i -g pnpm@$PNPM_VERSION
 WORKDIR /app
